@@ -1,0 +1,54 @@
+import { NextResponse } from "next/server";
+import connectToDatabase from "@/lib/db";
+import Event from "@/lib/models/Event";
+
+export const dynamic = 'force-dynamic';
+
+// GET /api/events
+export async function GET(req: Request) {
+    try {
+        await connectToDatabase();
+
+        // Parse query params like limit
+        const { searchParams } = new URL(req.url);
+        const limitParam = searchParams.get("limit");
+        const limit = limitParam ? parseInt(limitParam) : 0; // 0 means no limit in mongoose
+
+        const events = await Event.find({}).sort({ date: 1 }).limit(limit);
+
+        return NextResponse.json({ events }, { status: 200 });
+    } catch (error: any) {
+        console.error("GET EVENTS ERROR:", error);
+        return NextResponse.json({ error: "Failed to fetch events" }, { status: 500 });
+    }
+}
+
+// POST /api/events
+export async function POST(req: Request) {
+    try {
+        // In a real app we'd verify JWT token here
+        await connectToDatabase();
+
+        const body = await req.json();
+        const { title, date, location, shortDescription, fullDescription, image } = body;
+
+        // Basic validation
+        if (!title || !date || !location || !shortDescription || !fullDescription || !image) {
+            return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+        }
+
+        const newEvent = await Event.create({
+            title,
+            date,
+            location,
+            shortDescription,
+            fullDescription,
+            image
+        });
+
+        return NextResponse.json({ event: newEvent, message: "Event created successfully" }, { status: 201 });
+    } catch (error: any) {
+        console.error("POST EVENT ERROR:", error);
+        return NextResponse.json({ error: "Failed to create event" }, { status: 500 });
+    }
+}
