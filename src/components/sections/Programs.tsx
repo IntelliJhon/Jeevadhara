@@ -13,12 +13,12 @@ const PROJECTS = [
     {
         title: "SAMANNAYAM",
         description: "Early detection camps and classes on healthy life style in collaboration with local NGOs, CSOs, FBOs, Residents Associations, Community Service Clubs etc.",
-        image: "/images/Eyecamp.jpeg"
+        image: "/images/Samannayam.jpeg"
     },
     {
         title: "ABHAYAM CROSS DONATION",
         description: "Jeevadhara Supports swiping programs for organ transplantation and facilitating organ exchanges.",
-        image: "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=800&auto=format&fit=crop"
+        image: "/images/Donation.jpeg"
     },
     {
         title: "SANTHWANAM",
@@ -39,21 +39,6 @@ const PROJECTS = [
         title: "SRADHA",
         description: "Dissemination of information on lifestyle diseases through IEC and other means. As part of this initiative, the Foundation observes important health-related days by organising awareness classes, interactive sessions, and community programmes, aiming to educate the public on prevention, healthy habits, and the importance of timely care.",
         image: "/images/SRADHA.jpeg"
-    },
-    {
-        title: "DENTAL CAMP",
-        description: "Dental health screening and awareness camps conducted in collaboration with dental colleges to ensure oral hygiene and early detection of dental issues in the community.",
-        image: "/images/DENTAL.jpeg"
-    },
-    {
-        title: "BREAST CANCER AWARENESS",
-        description: "Specialized screening and awareness programs focused on early detection of breast cancer, providing vital information and health checks to women.",
-        image: "/images/BREASTCANCER.jpeg"
-    },
-    {
-        title: "FLOOD RELIEF",
-        description: "Emergency response and support programs providing immediate aid, food, and medical assistance to communities affected by natural disasters and floods.",
-        image: "/images/FLOOD RELIEF.jpeg"
     }
 ];
 
@@ -92,6 +77,31 @@ const PROGRAMMES = [
         title: "Sports Support Initiatives for Youth and Children",
         description: "Jeevadhara Foundation actively organises sports support initiatives and wellness programmes for children and youth with the aim of promoting healthy lifestyles, physical fitness, discipline, and positive social values. Through various sports activities, coaching camps, awareness programmes, and community-based events, the Foundation strives to create awareness about the harmful effects of drug abuse and substance addiction among the younger generation. These initiatives encourage children and youth to adopt exercise, sportsmanship, teamwork, and healthy habits as a way of life, while inspiring them to choose positivity, confidence, and personal growth over harmful addictions. By promoting active community participation and healthy recreational engagement, Jeevadhara Foundation aims to build a healthier, more responsible, and socially conscious generation.",
         image: "/images/sport.jpeg"
+    },
+    {
+        title: "Vayana Veettilekku",
+        description: "The “Vayana Veettilekku” Project is an educational and reading promotion initiative jointly organised by Jeevadhara Foundation in collaboration with Malayala Manorama at Holy Family School, Angamaly, aimed at encouraging reading habits among children and reducing excessive screen time. Through this programme, students are motivated to engage in regular newspaper reading, improve their general awareness, language skills, creativity, and develop a positive learning culture within their homes and communities.As part of its commitment towards educational empowerment and child development, Jeevadhara Foundation also extends scholarship support and educational assistance to students from economically weaker families, helping them continue their studies with confidence and dignity. Through such initiatives, the Foundation strives to nurture socially responsible, knowledgeable, and value-oriented future generations.",
+        image: "/images/vayana.jpeg"
+    },
+    {
+        title: "DENTAL CAMP",
+        description: "Dental health screening and awareness camps conducted in collaboration with dental colleges to ensure oral hygiene and early detection of dental issues in the community.",
+        image: "/images/DENTAL.jpeg"
+    },
+    {
+        title: "BREAST CANCER AWARENESS",
+        description: "Specialized screening and awareness programs focused on early detection of breast cancer, providing vital information and health checks to women.",
+        image: "/images/BREASTCANCER.jpeg"
+    },
+    {
+        title: "FLOOD RELIEF",
+        description: "Emergency response and support programs providing immediate aid, food, and medical assistance to communities affected by natural disasters and floods.",
+        image: "/images/FLOOD RELIEF.jpeg"
+    },
+    {
+        title: "EYE CAMP",
+        description: "Jeevadhara Foundation, in association with Little Flower Hospital & Research Centre, Angamaly, is conducting an ongoing eye care initiative aimed at promoting accessible and preventive eye healthcare services in the community. Through regular eye screening camps and awareness programmes, the initiative focuses on the early detection and management of common eye-related conditions such as cataract, vision impairment, diabetic eye diseases, and other age-related eye disorders. The project is supported by a dedicated team of doctors, healthcare professionals, volunteers, and students who work together to provide quality care, guidance, and awareness to the public. This continuing initiative reflects Jeevadhara Foundation’s commitment towards community well-being, preventive healthcare, and improving the quality of life of people across different sections of society.",
+        image: "/images/Eyecamp.jpeg"
     }
 ];
 

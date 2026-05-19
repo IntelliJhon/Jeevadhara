@@ -23,7 +23,8 @@ const HOSPITALS = [
     "Specialist Hospital-Ernakulam",
     "A P Varkey Mission Hospital – Ernakulam",
     "Morning Star Medical Centre-Adimali",
-    "Samaritan Hospital- Kizhakkambalam"
+    "Samaritan Hospital- Kizhakkambalam",
+    "SREE NARAYANA INSTITUTE OF SCINECE AND TECHNOLOGY ADD AKANE"
 ];
 
 export function PartnerHospitals() {
@@ -74,14 +75,14 @@ export function PartnerHospitals() {
                 >
                     {/* First copy */}
                     {HOSPITALS.map((hospital, index) => (
-                        <div key={index} className="px-8 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-center min-w-max">
-                            <span className="text-[15px] font-semibold text-foreground/80">{hospital}</span>
+                        <div key={index} className="px-8 py-4 bg-[#1f3462] border border-[#1f3462] rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-center min-w-max">
+                            <span className="text-[15px] font-semibold text-white">{hospital}</span>
                         </div>
                     ))}
                     {/* Second copy */}
                     {HOSPITALS.map((hospital, index) => (
-                        <div key={`dup-${index}`} className="px-8 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-center min-w-max">
-                            <span className="text-[15px] font-semibold text-foreground/80">{hospital}</span>
+                        <div key={`dup-${index}`} className="px-8 py-4 bg-[#1f3462] border border-[#1f3462] rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-center min-w-max">
+                            <span className="text-[15px] font-semibold text-white">{hospital}</span>
                         </div>
                     ))}
                 </motion.div>
@@ -98,14 +99,14 @@ export function PartnerHospitals() {
                 >
                     {/* First copy of reversed array */}
                     {[...HOSPITALS].reverse().map((hospital, index) => (
-                        <div key={index} className="px-8 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-center min-w-max">
-                            <span className="text-[15px] font-semibold text-foreground/80">{hospital}</span>
+                        <div key={index} className="px-8 py-4 bg-[#1f3462] border border-[#1f3462] rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-center min-w-max">
+                            <span className="text-[15px] font-semibold text-white">{hospital}</span>
                         </div>
                     ))}
                     {/* Second copy of reversed array */}
                     {[...HOSPITALS].reverse().map((hospital, index) => (
-                        <div key={`dup-${index}`} className="px-8 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-center min-w-max">
-                            <span className="text-[15px] font-semibold text-foreground/80">{hospital}</span>
+                        <div key={`dup-${index}`} className="px-8 py-4 bg-[#1f3462] border border-[#1f3462] rounded-2xl shadow-sm hover:shadow-md transition-shadow flex items-center justify-center min-w-max">
+                            <span className="text-[15px] font-semibold text-white">{hospital}</span>
                         </div>
                     ))}
                 </motion.div>

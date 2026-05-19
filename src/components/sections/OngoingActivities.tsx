@@ -8,12 +8,12 @@ import { Activity, Heart, Presentation, Users, Stethoscope, FileSearch, Eye } fr
 const ACTIVITIES = [
     {
         title: "Financial Assistance",
-        description: "For renal patients for dialysis through authorized coupons of the Foundation.",
+        description: "Financial Assistance to renal patients for dialysis through authorized coupons of the Foundation.",
         icon: <Activity className="w-6 h-6 text-blue-500" />
     },
     {
         title: "Organ Donation Promotion",
-        description: "\"MRITHASANJEEVANI\" Programme in co-operation with Government of Kerala.",
+        description: "Promotion of organ donations ‘Mrithasanjeevani’ programme in co-operation with Government of Kerala.",
         icon: <Heart className="w-6 h-6 text-red-500" />
     },
     {
@@ -23,23 +23,13 @@ const ACTIVITIES = [
     },
     {
         title: "Beneficiary Get-togethers",
-        description: "Gatherings of beneficiaries and their families at special occasions like ONAM, CHRISTMAS, NEW YEAR ETC...",
+        description: "Get-together of beneficiaries and their families at special occasions like Onam, New Year etc.",
         icon: <Users className="w-6 h-6 text-purple-500" />
     },
     {
         title: "Dialysis Machines",
-        description: "Mobilization and installation of Dialysis machines at hospitals in rural areas.",
-        icon: <Stethoscope className="w-6 h-6 text-teal-500" />
-    },
-    {
-        title: "Disease Detection Camps",
-        description: "Life style disease detection camps in association with SNIMS CHALAKKA.",
-        icon: <FileSearch className="w-6 h-6 text-indigo-500" />
-    },
-    {
-        title: "Dental & Eye Camps",
-        description: "In association with L.F Hospital Angamaly and Mar Baselios dental college Kothamangalam.",
-        icon: <Eye className="w-6 h-6 text-emerald-500" />
+        description: "Mobilisation and installation of Dialysis machines at hospitals in rural areas.",
+        icon: <img src="/images/icon.png" alt="Dialysis Machine" className="w-8 h-15 object-contain mix-blend-multiply" />
     }
 ];
 

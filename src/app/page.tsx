@@ -2,6 +2,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { Foundation } from "@/components/sections/Foundation";
+import { AdministrationCommittee } from "@/components/sections/AdministrationCommittee";
 import { FocusCards } from "@/components/sections/FocusCards";
 import { OngoingActivities } from "@/components/sections/OngoingActivities";
 import { Programs } from "@/components/sections/Programs";
@@ -11,6 +12,7 @@ import { ProgramIdea } from "@/components/sections/ProgramIdea";
 import { ImpactGallery } from "@/components/sections/ImpactGallery";
 import { Events } from "@/components/sections/Events";
 import { PartnerHospitals } from "@/components/sections/PartnerHospitals";
+import { SupportingOrganizations } from "@/components/sections/SupportingOrganizations";
 
 export default function Home() {
   return (
@@ -19,6 +21,7 @@ export default function Home() {
       <main className="flex-1 pt-20 bg-background">
         <Hero />
         <Foundation />
+        <AdministrationCommittee />
         <FocusCards />
         <OngoingActivities />
         <Programs />
@@ -28,6 +31,7 @@ export default function Home() {
         <ImpactGallery />
         <Events />
         <PartnerHospitals />
+        <SupportingOrganizations />
       </main>
       <Footer />
     </div>

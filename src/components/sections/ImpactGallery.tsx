@@ -6,12 +6,20 @@ import { ChevronRight, ChevronLeft, HandHeart } from "lucide-react";
 
 // Use the newly provided impact images
 const IMAGES = [
-    "/images/impact1.jpg",
+    "/images/impact12.jpeg",
     "/images/impact2.jpg",
     "/images/impact3.jpg",
     "/images/impact4.jpg",
     "/images/impact5.jpg",
-    "/images/impact6.jpg"
+    "/images/impact6.jpg",
+    "/images/impact1.jpg",
+    "/images/impact7.jpeg",
+    "/images/impact8.jpeg",
+    "/images/impact9.jpeg",
+    "/images/impact10.jpeg",
+    "/images/impact11.jpeg",
+    "/images/impact13.jpeg",
+    "/images/impact14.jpeg"
 ];
 
 const swipeConfidenceThreshold = 10000;
