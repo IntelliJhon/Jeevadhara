@@ -3,7 +3,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const SUPPORT_IMAGES = Array.from({ length: 13 }, (_, i) => `/images/support${i + 1}.jpeg`);
+const SUPPORT_IMAGES = [
+    ...Array.from({ length: 19 }, (_, i) => `/images/support${i + 1}.jpeg`),
+    "/images/support21.jpeg"
+];
 
 export function SupportingOrganizations() {
     return (
