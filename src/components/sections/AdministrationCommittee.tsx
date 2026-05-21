@@ -44,7 +44,7 @@ export function AdministrationCommittee() {
 
                 <div className="grid lg:grid-cols-12 gap-12 items-start mb-20">
                     <motion.div 
-                        className="lg:col-span-4 relative mx-auto w-full max-w-sm"
+                        className="lg:col-span-4 relative mx-auto w-full max-w-[280px]"
                         initial={{ opacity: 0, x: -40 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
