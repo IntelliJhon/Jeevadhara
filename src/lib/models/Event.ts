@@ -6,7 +6,14 @@ const EventSchema = new mongoose.Schema({
     location: { type: String, required: true },
     shortDescription: { type: String, required: true },
     fullDescription: { type: String, required: true },
-    image: { type: String, required: true }, // Cloudinary or other URL
+    image: { type: String, required: false }, // Cloudinary or other URL
+    videoUrl: { type: String, required: false }, // Optional Cloudinary video URL
+    category: { 
+        type: String, 
+        required: true,
+        enum: ['News', 'Institutional Events', 'Community Events', 'Gallery'],
+        default: 'News'
+    },
 }, {
     timestamps: true
 });

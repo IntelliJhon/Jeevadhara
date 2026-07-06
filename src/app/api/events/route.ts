@@ -30,11 +30,11 @@ export async function POST(req: Request) {
         await connectToDatabase();
 
         const body = await req.json();
-        const { title, date, location, shortDescription, fullDescription, image } = body;
+        const { title, date, location, shortDescription, fullDescription, image, videoUrl, category } = body;
 
         // Basic validation
-        if (!title || !date || !location || !shortDescription || !fullDescription || !image) {
-            return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+        if (!title || !date || !location || !shortDescription || !fullDescription || !category || (!image && !videoUrl)) {
+            return NextResponse.json({ error: "All fields are required, and either an image or video is required." }, { status: 400 });
         }
 
         const newEvent = await Event.create({
@@ -43,7 +43,9 @@ export async function POST(req: Request) {
             location,
             shortDescription,
             fullDescription,
-            image
+            image,
+            videoUrl,
+            category
         });
 
         return NextResponse.json({ event: newEvent, message: "Event created successfully" }, { status: 201 });

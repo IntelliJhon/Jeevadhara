@@ -64,13 +64,27 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
                         </div>
                     </div>
 
-                    <div className="rounded-2xl overflow-hidden mb-12 shadow-xl border border-zinc-100 bg-white">
-                        <img
-                            src={eventData.image || "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1200&auto=format&fit=crop"}
-                            alt={eventData.title}
-                            className="w-full max-h-[500px] object-cover"
-                        />
-                    </div>
+                    {eventData.videoUrl ? (
+                        <div className="rounded-2xl overflow-hidden mb-12 shadow-xl border border-zinc-100 bg-black flex justify-center">
+                            <video 
+                                src={eventData.videoUrl} 
+                                poster={eventData.image || eventData.videoUrl.replace(/\.[^/.]+$/, ".jpg")}
+                                controls 
+                                className="w-full max-h-[500px] object-cover"
+                                preload="metadata"
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    ) : (
+                        <div className="rounded-2xl overflow-hidden mb-8 shadow-xl border border-zinc-100 bg-white">
+                            <img
+                                src={eventData.image || "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1200&auto=format&fit=crop"}
+                                alt={eventData.title}
+                                className="w-full max-h-[500px] object-cover"
+                            />
+                        </div>
+                    )}
 
                     <div className="prose prose-lg prose-zinc max-w-none bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-zinc-100">
                         <h2 className="text-2xl font-bold font-heading text-primary mb-4 border-b pb-4">Event Details</h2>

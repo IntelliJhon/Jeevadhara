@@ -18,7 +18,8 @@ export default function AdminDashboard() {
     const [view, setView] = useState<"list" | "create" | "edit">("list");
     const [editingId, setEditingId] = useState<string | null>(null);
 
-    const [form, setForm] = useState({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "" });
+    const [form, setForm] = useState({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "News" });
+    const [isUploading, setIsUploading] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem("adminToken");
@@ -69,7 +70,9 @@ export default function AdminDashboard() {
             location: ev.location || "",
             shortDescription: ev.shortDescription || "",
             fullDescription: ev.fullDescription || "",
-            image: ev.image || ""
+            image: ev.image || "",
+            videoUrl: ev.videoUrl || "",
+            category: ev.category || "News"
         });
         setEditingId(ev._id);
         setView("edit");
@@ -90,7 +93,7 @@ export default function AdminDashboard() {
                 body: JSON.stringify(form)
             });
         }
-        setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "" });
+        setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "News" });
 
         toast.success(view === "edit" ? "Event professionally updated" : "New Event dynamically published", {
             description: view === "edit" ? "Your changes have been saved gracefully." : "Your event is now live across the platform."
@@ -108,8 +111,8 @@ export default function AdminDashboard() {
                     Jeevadhara<br /><span className="text-sm font-normal text-white/70 block mt-2 tracking-widest uppercase">Admin Panel</span>
                 </h2>
                 <nav className="flex-1 space-y-2 mb-8 md:mb-0">
-                    <button onClick={() => { setView("list"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "" }); }} className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${view === "list" ? "bg-white text-primary shadow-lg" : "hover:bg-white/10 text-white/80 hover:text-white"}`}>Events List</button>
-                    <button onClick={() => { setView("create"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "" }); }} className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${(view === "create" || view === "edit") ? "bg-white text-primary shadow-lg" : "hover:bg-white/10 text-white/80 hover:text-white"}`}>{view === "edit" ? "Edit Event" : "Create Event"}</button>
+                    <button onClick={() => { setView("list"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "News" }); }} className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${view === "list" ? "bg-white text-primary shadow-lg" : "hover:bg-white/10 text-white/80 hover:text-white"}`}>Events List</button>
+                    <button onClick={() => { setView("create"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "News" }); }} className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${(view === "create" || view === "edit") ? "bg-white text-primary shadow-lg" : "hover:bg-white/10 text-white/80 hover:text-white"}`}>{view === "edit" ? "Edit Event" : "Create Event"}</button>
                 </nav>
                 <div className="mt-auto border-t border-white/10 pt-6">
                     <button onClick={handleLogout} className="w-full text-left px-4 py-3 hover:bg-red-500/20 text-red-100 flex items-center justify-between rounded-lg transition-colors font-medium">Log out <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" x2="9" y1="12" y2="12" /></svg></button>
@@ -133,6 +136,7 @@ export default function AdminDashboard() {
                                 <thead>
                                     <tr className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 text-sm">
                                         <th className="py-4 px-6 font-semibold">Event Title</th>
+                                        <th className="py-4 px-6 font-semibold">Category</th>
                                         <th className="py-4 px-6 font-semibold">Date</th>
                                         <th className="py-4 px-6 font-semibold">Location</th>
                                         <th className="py-4 px-6 font-semibold text-right">Actions</th>
@@ -142,6 +146,11 @@ export default function AdminDashboard() {
                                     {events.map(ev => (
                                         <tr key={ev._id} className="border-b border-zinc-100 hover:bg-zinc-50/50 transition-colors">
                                             <td className="py-4 px-6 font-semibold text-foreground max-w-[300px] truncate">{ev.title}</td>
+                                            <td className="py-4 px-6 text-foreground/80">
+                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                                                    {ev.category || "News"}
+                                                </span>
+                                            </td>
                                             <td className="py-4 px-6 text-foreground/80">{new Date(ev.date).toLocaleDateString()}</td>
                                             <td className="py-4 px-6 text-foreground/80">{ev.location}</td>
                                             <td className="py-4 px-6 text-right space-x-2">
@@ -162,9 +171,29 @@ export default function AdminDashboard() {
                 {(view === "create" || view === "edit") && (
                     <Card className="bg-white max-w-3xl border border-zinc-200 shadow-sm p-8">
                         <form onSubmit={handleSubmit} className="space-y-6">
-                            <div>
-                                <label className="block text-sm font-semibold mb-2 text-foreground/80">Event Title</label>
-                                <input required type="text" className="w-full border border-zinc-200 p-3.5 rounded-xl bg-zinc-50 focus:ring-2 focus:ring-primary/20 outline-none transition-all" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="e.g. Health Camp 2024" />
+                            
+                            {/* Cloudinary Video Upload Logic */}
+                            <input type="hidden" name="cloudinaryUploadHack" value="false" />
+                            {/* End Hack */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-semibold mb-2 text-foreground/80">Event Title</label>
+                                    <input required type="text" className="w-full border border-zinc-200 p-3.5 rounded-xl bg-zinc-50 focus:ring-2 focus:ring-primary/20 outline-none transition-all" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="e.g. Health Camp 2024" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold mb-2 text-foreground/80">Category</label>
+                                    <select 
+                                        required 
+                                        className="w-full border border-zinc-200 p-3.5 rounded-xl bg-zinc-50 focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                                        value={form.category} 
+                                        onChange={e => setForm({ ...form, category: e.target.value })}
+                                    >
+                                        <option value="News">News</option>
+                                        <option value="Institutional Events">Institutional Events</option>
+                                        <option value="Community Events">Community Events</option>
+                                        <option value="Gallery">Gallery</option>
+                                    </select>
+                                </div>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
@@ -180,6 +209,53 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
                             <div>
+                                <label className="block text-sm font-semibold mb-2 text-foreground/80">Event Video (Optional)</label>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex-1">
+                                        <input 
+                                            type="file" 
+                                            accept="video/*"
+                                            className="w-full border border-zinc-200 p-2.5 rounded-xl bg-zinc-50 focus:ring-2 focus:ring-primary/20 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer text-sm" 
+                                            onChange={async (e) => {
+                                                const file = e.target.files?.[0];
+                                                if (!file) return;
+
+                                                setIsUploading(true);
+                                                const formData = new FormData();
+                                                formData.append("file", file);
+                                                formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "jeevadhara");
+
+                                                try {
+                                                    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "cj9atno2";
+                                                    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {
+                                                        method: "POST",
+                                                        body: formData
+                                                    });
+                                                    const data = await res.json();
+                                                    if (data.secure_url) {
+                                                        setForm({ ...form, videoUrl: data.secure_url });
+                                                        toast.success("Video uploaded successfully!");
+                                                    } else {
+                                                        toast.error("Video upload failed");
+                                                    }
+                                                } catch (err) {
+                                                    console.error(err);
+                                                    toast.error("Video upload error");
+                                                } finally {
+                                                    setIsUploading(false);
+                                                }
+                                            }} 
+                                        />
+                                    </div>
+                                    {isUploading && (
+                                        <div className="text-sm font-medium text-primary animate-pulse">Uploading in progress please wait</div>
+                                    )}
+                                    {form.videoUrl && !isUploading && (
+                                        <div className="text-sm font-medium text-green-600">Video ready ✓</div>
+                                    )}
+                                </div>
+                            </div>
+                            <div>
                                 <label className="block text-sm font-semibold mb-2 text-foreground/80">Cover Image</label>
                                 <div className="flex items-center gap-4">
                                     {form.image && (
@@ -191,7 +267,7 @@ export default function AdminDashboard() {
                                         <input 
                                             type="file" 
                                             accept="image/*"
-                                            required={view === "create" && !form.image}
+                                            required={view === "create" && !form.image && !form.videoUrl}
                                             className="w-full border border-zinc-200 p-2.5 rounded-xl bg-zinc-50 focus:ring-2 focus:ring-primary/20 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer text-sm" 
                                             onChange={e => {
                                                 const file = e.target.files?.[0];
@@ -208,6 +284,7 @@ export default function AdminDashboard() {
                                     </div>
                                 </div>
                             </div>
+
                             <div>
                                 <label className="block text-sm font-semibold mb-2 text-foreground/80">Short Description (Card preview)</label>
                                 <textarea required maxLength={150} className="w-full border border-zinc-200 p-3.5 rounded-xl bg-zinc-50 focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none" rows={2} value={form.shortDescription} onChange={e => setForm({ ...form, shortDescription: e.target.value })} placeholder="Brief description..." />
@@ -217,7 +294,7 @@ export default function AdminDashboard() {
                                 <textarea required rows={6} className="w-full border border-zinc-200 p-3.5 rounded-xl bg-zinc-50 focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none" value={form.fullDescription} onChange={e => setForm({ ...form, fullDescription: e.target.value })} placeholder="Detailed information..." />
                             </div>
                             <div className="pt-4 border-t border-zinc-100 flex justify-end gap-3 mt-8">
-                                <Button type="button" variant="outline" onClick={() => { setView("list"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "" }); }}>Cancel</Button>
+                                <Button type="button" variant="outline" onClick={() => { setView("list"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "News" }); }}>Cancel</Button>
                                 <Button type="submit" size="lg" className="px-8 shadow-md" variant="primary">{view === "edit" ? "Update Event" : "Publish Event"}</Button>
                             </div>
                         </form>
