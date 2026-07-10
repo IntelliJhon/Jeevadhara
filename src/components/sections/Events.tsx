@@ -9,9 +9,10 @@ import { Calendar, MapPin, Loader2, X, Share2, Newspaper, Building2, Users, Imag
 import { toast } from "sonner";
 
 const CATEGORIES = [
-    { id: "News", title: "📰 News", icon: Newspaper, color: "text-blue-500", desc: "Achievements, announcements & updates" },
-    { id: "Institutional Events", title: "🏛️ Institutional Events", icon: Building2, color: "text-purple-500", desc: "Collaborations with institutions & orgs" },
     { id: "Community Events", title: "🤝 Community Events", icon: Users, color: "text-green-500", desc: "Outreach, medical camps & gatherings" },
+    { id: "Institutional Events", title: "🏛️ Institutional Events", icon: Building2, color: "text-purple-500", desc: "Collaborations with institutions & orgs" },
+    { id: "News", title: "📰 News", icon: Newspaper, color: "text-blue-500", desc: "Achievements, announcements & updates" },
+    { id: "Upcoming Events", title: "📅 Upcoming Events", icon: Calendar, color: "text-amber-500", desc: "Announcements of future events" },
     { id: "Gallery", title: "🖼️ Gallery", icon: ImageIcon, color: "text-orange-500", desc: "Photo and video highlights" }
 ];
 
@@ -122,7 +123,7 @@ export function Events() {
                         <Loader2 className="w-12 h-12 text-primary animate-spin" />
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                         {CATEGORIES.map((cat, index) => {
                             const coverImage = getCategoryCover(cat.id);
                             return (

@@ -18,7 +18,7 @@ export default function AdminDashboard() {
     const [view, setView] = useState<"list" | "create" | "edit">("list");
     const [editingId, setEditingId] = useState<string | null>(null);
 
-    const [form, setForm] = useState({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "News" });
+    const [form, setForm] = useState({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "Community Events" });
     const [isUploading, setIsUploading] = useState(false);
 
     useEffect(() => {
@@ -93,7 +93,7 @@ export default function AdminDashboard() {
                 body: JSON.stringify(form)
             });
         }
-        setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "News" });
+        setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "Community Events" });
 
         toast.success(view === "edit" ? "Event professionally updated" : "New Event dynamically published", {
             description: view === "edit" ? "Your changes have been saved gracefully." : "Your event is now live across the platform."
@@ -111,8 +111,8 @@ export default function AdminDashboard() {
                     Jeevadhara<br /><span className="text-sm font-normal text-white/70 block mt-2 tracking-widest uppercase">Admin Panel</span>
                 </h2>
                 <nav className="flex-1 space-y-2 mb-8 md:mb-0">
-                    <button onClick={() => { setView("list"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "News" }); }} className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${view === "list" ? "bg-white text-primary shadow-lg" : "hover:bg-white/10 text-white/80 hover:text-white"}`}>Events List</button>
-                    <button onClick={() => { setView("create"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "News" }); }} className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${(view === "create" || view === "edit") ? "bg-white text-primary shadow-lg" : "hover:bg-white/10 text-white/80 hover:text-white"}`}>{view === "edit" ? "Edit Event" : "Create Event"}</button>
+                    <button onClick={() => { setView("list"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "Community Events" }); }} className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${view === "list" ? "bg-white text-primary shadow-lg" : "hover:bg-white/10 text-white/80 hover:text-white"}`}>Events List</button>
+                    <button onClick={() => { setView("create"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "Community Events" }); }} className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${(view === "create" || view === "edit") ? "bg-white text-primary shadow-lg" : "hover:bg-white/10 text-white/80 hover:text-white"}`}>{view === "edit" ? "Edit Event" : "Create Event"}</button>
                 </nav>
                 <div className="mt-auto border-t border-white/10 pt-6">
                     <button onClick={handleLogout} className="w-full text-left px-4 py-3 hover:bg-red-500/20 text-red-100 flex items-center justify-between rounded-lg transition-colors font-medium">Log out <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" x2="9" y1="12" y2="12" /></svg></button>
@@ -188,9 +188,10 @@ export default function AdminDashboard() {
                                         value={form.category} 
                                         onChange={e => setForm({ ...form, category: e.target.value })}
                                     >
-                                        <option value="News">News</option>
-                                        <option value="Institutional Events">Institutional Events</option>
                                         <option value="Community Events">Community Events</option>
+                                        <option value="Institutional Events">Institutional Events</option>
+                                        <option value="News">News</option>
+                                        <option value="Upcoming Events">Upcoming Events</option>
                                         <option value="Gallery">Gallery</option>
                                     </select>
                                 </div>
@@ -291,10 +292,10 @@ export default function AdminDashboard() {
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold mb-2 text-foreground/80">Full Event Description</label>
-                                <textarea required rows={6} className="w-full border border-zinc-200 p-3.5 rounded-xl bg-zinc-50 focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none" value={form.fullDescription} onChange={e => setForm({ ...form, fullDescription: e.target.value })} placeholder="Detailed information..." />
+                                <textarea rows={6} className="w-full border border-zinc-200 p-3.5 rounded-xl bg-zinc-50 focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none" value={form.fullDescription} onChange={e => setForm({ ...form, fullDescription: e.target.value })} placeholder="Detailed information..." />
                             </div>
                             <div className="pt-4 border-t border-zinc-100 flex justify-end gap-3 mt-8">
-                                <Button type="button" variant="outline" onClick={() => { setView("list"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "News" }); }}>Cancel</Button>
+                                <Button type="button" variant="outline" onClick={() => { setView("list"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "Community Events" }); }}>Cancel</Button>
                                 <Button type="submit" size="lg" className="px-8 shadow-md" variant="primary">{view === "edit" ? "Update Event" : "Publish Event"}</Button>
                             </div>
                         </form>

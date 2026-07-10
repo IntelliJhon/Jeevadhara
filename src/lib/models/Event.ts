@@ -5,13 +5,13 @@ const EventSchema = new mongoose.Schema({
     date: { type: Date, required: true },
     location: { type: String, required: true },
     shortDescription: { type: String, required: true },
-    fullDescription: { type: String, required: true },
+    fullDescription: { type: String, required: false },
     image: { type: String, required: false }, // Cloudinary or other URL
     videoUrl: { type: String, required: false }, // Optional Cloudinary video URL
     category: { 
         type: String, 
         required: true,
-        enum: ['News', 'Institutional Events', 'Community Events', 'Gallery'],
+        enum: ['News', 'Institutional Events', 'Community Events', 'Upcoming Events', 'Gallery'],
         default: 'News'
     },
 }, {

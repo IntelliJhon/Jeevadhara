@@ -33,8 +33,8 @@ export async function POST(req: Request) {
         const { title, date, location, shortDescription, fullDescription, image, videoUrl, category } = body;
 
         // Basic validation
-        if (!title || !date || !location || !shortDescription || !fullDescription || !category || (!image && !videoUrl)) {
-            return NextResponse.json({ error: "All fields are required, and either an image or video is required." }, { status: 400 });
+        if (!title || !date || !location || !shortDescription || !category || (!image && !videoUrl)) {
+            return NextResponse.json({ error: "All fields are required (except full description), and either an image or video is required." }, { status: 400 });
         }
 
         const newEvent = await Event.create({

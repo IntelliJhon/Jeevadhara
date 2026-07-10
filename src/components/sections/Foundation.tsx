@@ -29,7 +29,7 @@ function Counter({ end, suffix = "" }: { end: number, suffix?: string }) {
 }
 
 const STATS = [
-    { value: 50000, suffix: "+", label: "Free Dialysis to 1000+ renal patients", icon: <HeartPulse className="w-6 h-6 text-red-500" /> },
+    { value: 52000, suffix: " +", label: "Free Dialysis to 1000+ renal patients", icon: <HeartPulse className="w-6 h-6 text-red-500" /> },
     { value: 200, suffix: "+", label: "Kidney screening camps", icon: <Activity className="w-6 h-6 text-blue-500" /> },
     { value: 21, suffix: "+", label: "Hospital Partners", icon: <Building2 className="w-6 h-6 text-emerald-500" /> },
     { value: 14, suffix: "+", label: "Dialysis Machines", icon: <img src="/images/icon.png" alt="Dialysis Machine Icon" className="w-15 h-15 object-contain mix-blend-multiply" /> },
