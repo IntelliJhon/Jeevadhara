@@ -32,7 +32,7 @@ export default function AdminDashboard() {
 
     const fetchEvents = async () => {
         try {
-            const res = await fetch("/api/events");
+            const res = await fetch("/api/events?excludeImage=true");
             const data = await res.json();
             if (data.events) setEvents(data.events);
         } catch (err) {
@@ -63,19 +63,29 @@ export default function AdminDashboard() {
         });
     };
 
-    const startEdit = (ev: any) => {
-        setForm({
-            title: ev.title || "",
-            date: ev.date ? new Date(ev.date).toISOString().split('T')[0] : "",
-            location: ev.location || "",
-            shortDescription: ev.shortDescription || "",
-            fullDescription: ev.fullDescription || "",
-            image: ev.image || "",
-            videoUrl: ev.videoUrl || "",
-            category: ev.category || "News"
-        });
+    const startEdit = async (ev: any) => {
         setEditingId(ev._id);
         setView("edit");
+        try {
+            const res = await fetch(`/api/events/${ev._id}`);
+            const data = await res.json();
+            if (data.event) {
+                const fullEv = data.event;
+                setForm({
+                    title: fullEv.title || "",
+                    date: fullEv.date ? new Date(fullEv.date).toISOString().split('T')[0] : "",
+                    location: fullEv.location || "",
+                    shortDescription: fullEv.shortDescription || "",
+                    fullDescription: fullEv.fullDescription || "",
+                    image: fullEv.image || "",
+                    videoUrl: fullEv.videoUrl || "",
+                    category: fullEv.category || "News"
+                });
+            }
+        } catch (err) {
+            console.error("Failed to fetch full event:", err);
+            toast.error("Failed to load event details");
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {

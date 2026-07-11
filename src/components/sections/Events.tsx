@@ -17,34 +17,55 @@ const CATEGORIES = [
 ];
 
 export function Events() {
-    const [allEvents, setAllEvents] = useState<any[]>([]);
+    const [covers, setCovers] = useState<Record<string, { image?: string, videoUrl?: string }>>({});
+    const [categoryEvents, setCategoryEvents] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadingCategoryEvents, setLoadingCategoryEvents] = useState(false);
 
     // Modal states
     const [showModal, setShowModal] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
     useEffect(() => {
-        async function fetchEvents() {
+        async function fetchCovers() {
             try {
-                // Fetch all events to populate category covers
-                const res = await fetch("/api/events");
+                // Fetch covers to populate category covers quickly
+                const res = await fetch("/api/events?coversOnly=true");
                 if (res.ok) {
                     const data = await res.json();
-                    setAllEvents(data.events || []);
+                    const coversMap: Record<string, { image?: string, videoUrl?: string }> = {};
+                    if (data.covers) {
+                        data.covers.forEach((c: any) => {
+                            coversMap[c._id] = { image: c.image, videoUrl: c.videoUrl };
+                        });
+                    }
+                    setCovers(coversMap);
                 }
             } catch (err) {
-                console.error("Failed to fetch events:", err);
+                console.error("Failed to fetch covers:", err);
             } finally {
                 setLoading(false);
             }
         }
-        fetchEvents();
+        fetchCovers();
     }, []);
 
-    const handleCategoryClick = (categoryId: string) => {
+    const handleCategoryClick = async (categoryId: string) => {
         setSelectedCategory(categoryId);
         setShowModal(true);
+        setLoadingCategoryEvents(true);
+        setCategoryEvents([]);
+        try {
+            const res = await fetch(`/api/events?category=${encodeURIComponent(categoryId)}`);
+            if (res.ok) {
+                const data = await res.json();
+                setCategoryEvents(data.events || []);
+            }
+        } catch (err) {
+            console.error("Failed to fetch category events:", err);
+        } finally {
+            setLoadingCategoryEvents(false);
+        }
     };
 
     const handleShare = async (e: React.MouseEvent, event: any) => {
@@ -79,19 +100,12 @@ export function Events() {
     };
 
     const getCategoryCover = (categoryId: string) => {
-        // Find the latest event with an image OR video in this category
-        const categoryEvents = allEvents.filter(e => (e.category || 'News') === categoryId && (e.image || e.videoUrl));
-        if (categoryEvents.length > 0) {
-            // Assuming events are sorted by date ascending from API, take last
-            const latestEvent = categoryEvents[categoryEvents.length - 1];
-            return getThumbnail(latestEvent);
+        const cover = covers[categoryId];
+        if (cover) {
+            return getThumbnail(cover);
         }
         return "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=600&auto=format&fit=crop";
     };
-
-    const filteredEvents = selectedCategory 
-        ? allEvents.filter(e => (e.category || 'News') === selectedCategory)
-        : [];
 
     return (
         <section id="events" className="py-16 md:py-24 bg-zinc-50 border-t border-zinc-200">
@@ -182,14 +196,18 @@ export function Events() {
                                 </button>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto overflow-x-hidden px-0 py-4 md:p-8 custom-scrollbar bg-zinc-100/50 md:bg-transparent">
-                                {filteredEvents.length === 0 ? (
+                            <div className="flex-1 overflow-y-auto overflow-x-hidden px-0 py-4 md:p-8 custom-scrollbar bg-zinc-100/50 md:bg-transparent flex flex-col">
+                                {loadingCategoryEvents ? (
+                                    <div className="flex flex-1 justify-center items-center py-32">
+                                        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+                                    </div>
+                                ) : categoryEvents.length === 0 ? (
                                     <div className="flex justify-center items-center py-32 text-zinc-500">
                                         <p>No events found in this category yet.</p>
                                     </div>
                                 ) : (
                                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                                        {filteredEvents.map((event) => (
+                                        {categoryEvents.map((event) => (
                                             <Card key={event._id} className="h-full flex flex-col p-0 overflow-hidden group border-0 border-y md:border shadow-sm hover:shadow-xl transition-all duration-300 rounded-none md:rounded-[1.2rem] bg-white relative">
                                                 <div className="relative h-48 md:h-40 overflow-hidden">
                                                     <img

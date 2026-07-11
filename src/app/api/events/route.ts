@@ -9,12 +9,34 @@ export async function GET(req: Request) {
     try {
         await connectToDatabase();
 
-        // Parse query params like limit
+        // Parse query params
         const { searchParams } = new URL(req.url);
         const limitParam = searchParams.get("limit");
         const limit = limitParam ? parseInt(limitParam) : 0; // 0 means no limit in mongoose
+        const category = searchParams.get("category");
+        const excludeImage = searchParams.get("excludeImage") === "true";
+        const coversOnly = searchParams.get("coversOnly") === "true";
 
-        const events = await Event.find({}).sort({ date: 1 }).limit(limit);
+        if (coversOnly) {
+            const covers = await Event.aggregate([
+                { $match: { $or: [ { image: { $exists: true, $ne: "" } }, { videoUrl: { $exists: true, $ne: "" } } ] } },
+                { $sort: { date: -1 } },
+                { $group: { _id: "$category", image: { $first: "$image" }, videoUrl: { $first: "$videoUrl" } } }
+            ]);
+            return NextResponse.json({ covers }, { status: 200 });
+        }
+
+        let query: any = {};
+        if (category) {
+            query.category = category;
+        }
+
+        let projection: any = {};
+        if (excludeImage) {
+            projection = { image: 0, fullDescription: 0 };
+        }
+
+        const events = await Event.find(query, projection).sort({ date: 1 }).limit(limit).allowDiskUse();
 
         return NextResponse.json({ events }, { status: 200 });
     } catch (error: any) {
