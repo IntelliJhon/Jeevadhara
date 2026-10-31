@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import connectToDatabase from "@/lib/db";
 import User from "@/lib/models/User";
-import { requireAdmin } from "@/lib/auth";
+import { hashPassword, requireAdmin, verifyPassword } from "@/lib/auth";
 
 // POST /api/auth/change-password
 export async function POST(req: Request) {
@@ -25,13 +24,11 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        // Login hashes any plain-text password, so by now the stored value is a bcrypt hash.
-        const valid = await bcrypt.compare(currentPassword, user.password);
-        if (!valid) {
+        if (!(await verifyPassword(currentPassword, user.password))) {
             return NextResponse.json({ error: "Current password is incorrect" }, { status: 400 });
         }
 
-        user.password = await bcrypt.hash(newPassword, 12);
+        user.password = await hashPassword(newPassword);
         await user.save();
 
         return NextResponse.json({ message: "Password updated" }, { status: 200 });

@@ -1,12 +1,8 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import connectToDatabase from "@/lib/db";
 import User from "@/lib/models/User";
-import { getJwtSecret } from "@/lib/auth";
-
-// bcrypt hashes start with $2a$, $2b$ or $2y$
-const isBcryptHash = (value: string) => /^\$2[aby]\$/.test(value);
+import { getJwtSecret, hashPassword, isBcryptHash, verifyPassword } from "@/lib/auth";
 
 export async function POST(req: Request) {
     try {
@@ -22,20 +18,14 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
         }
 
-        let valid: boolean;
-        if (isBcryptHash(user.password)) {
-            valid = await bcrypt.compare(password, user.password);
-        } else {
-            // Older accounts were saved in plain text: accept once, then store the hash instead.
-            valid = user.password === password;
-            if (valid) {
-                user.password = await bcrypt.hash(password, 12);
-                await user.save();
-            }
+        if (!(await verifyPassword(password, user.password))) {
+            return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
         }
 
-        if (!valid) {
-            return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+        // Replace a plain-text password with its hash now that we know it's correct.
+        if (!isBcryptHash(user.password)) {
+            user.password = await hashPassword(password);
+            await user.save();
         }
 
         const token = jwt.sign({ userId: user._id, role: user.role }, getJwtSecret(), { expiresIn: '1d' });

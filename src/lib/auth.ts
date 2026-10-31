@@ -1,5 +1,16 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+
+// bcrypt hashes start with $2a$, $2b$ or $2y$
+export const isBcryptHash = (value: string) => /^\$2[aby]\$/.test(value);
+
+// Older accounts were saved in plain text, so accept either a bcrypt hash or an exact plain-text match.
+export async function verifyPassword(password: string, stored: string): Promise<boolean> {
+    return isBcryptHash(stored) ? bcrypt.compare(password, stored) : password === stored;
+}
+
+export const hashPassword = (password: string) => bcrypt.hash(password, 12);
 
 export function getJwtSecret(): string {
     const secret = process.env.JWT_SECRET;
