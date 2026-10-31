@@ -36,7 +36,7 @@ export async function GET(req: Request) {
             projection = { image: 0, fullDescription: 0 };
         }
 
-        const events = await Event.find(query, projection).sort({ date: 1 }).limit(limit).allowDiskUse();
+        const events = await Event.find(query, projection).sort({ date: 1 }).limit(limit).allowDiskUse(true);
 
         return NextResponse.json({ events }, { status: 200 });
     } catch (error: any) {
