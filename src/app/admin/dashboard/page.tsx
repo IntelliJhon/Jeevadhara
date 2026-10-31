@@ -15,11 +15,12 @@ const LocationPicker = dynamic(() => import('@/components/ui/LocationPicker'), {
 export default function AdminDashboard() {
     const router = useRouter();
     const [events, setEvents] = useState<any[]>([]);
-    const [view, setView] = useState<"list" | "create" | "edit">("list");
+    const [view, setView] = useState<"list" | "create" | "edit" | "password">("list");
     const [editingId, setEditingId] = useState<string | null>(null);
 
     const [form, setForm] = useState({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "Community Events" });
     const [isUploading, setIsUploading] = useState(false);
+    const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
 
     useEffect(() => {
         const token = localStorage.getItem("adminToken");
@@ -45,13 +46,32 @@ export default function AdminDashboard() {
         router.push("/");
     };
 
+    // Sends the admin token with the request; an expired or invalid session goes back to the login page.
+    const authFetch = async (url: string, options: RequestInit = {}) => {
+        const res = await fetch(url, {
+            ...options,
+            headers: { ...options.headers, Authorization: `Bearer ${localStorage.getItem("adminToken") || ""}` }
+        });
+        if (res.status === 401) {
+            localStorage.removeItem("adminToken");
+            toast.error("Session expired", { description: "Please log in again." });
+            router.push("/admin/login");
+            throw new Error("Unauthorized");
+        }
+        return res;
+    };
+
     const handleDelete = async (id: string) => {
         toast.error("Are you sure?", {
             description: "This will permanently delete the event from the database.",
             action: {
                 label: "Confirm Delete",
                 onClick: async () => {
-                    await fetch(`/api/events/${id}`, { method: "DELETE" });
+                    const res = await authFetch(`/api/events/${id}`, { method: "DELETE" });
+                    if (!res.ok) {
+                        toast.error("Failed to delete event");
+                        return;
+                    }
                     fetchEvents();
                     toast.success("Event permanently deleted", { description: "The event has been securely removed from the database." });
                 }
@@ -90,18 +110,24 @@ export default function AdminDashboard() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        let res: Response | null = null;
         if (view === "create") {
-            await fetch("/api/events", {
+            res = await authFetch("/api/events", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form)
             });
         } else if (view === "edit" && editingId) {
-            await fetch(`/api/events/${editingId}`, {
+            res = await authFetch(`/api/events/${editingId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form)
             });
+        }
+        if (res && !res.ok) {
+            const data = await res.json().catch(() => ({}));
+            toast.error("Failed to save event", { description: data.error });
+            return;
         }
         setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "Community Events" });
 
@@ -114,6 +140,27 @@ export default function AdminDashboard() {
         fetchEvents();
     };
 
+    const handleChangePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+            toast.error("New passwords do not match");
+            return;
+        }
+        const res = await authFetch("/api/auth/change-password", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ currentPassword: passwordForm.currentPassword, newPassword: passwordForm.newPassword })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            toast.error("Password not changed", { description: data.error });
+            return;
+        }
+        setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+        toast.success("Password updated", { description: "Use your new password next time you log in." });
+        setView("list");
+    };
+
     return (
         <div className="min-h-screen bg-zinc-50 flex flex-col md:flex-row shadow-inner">
             <div className="w-full md:w-64 bg-primary text-white p-6 flex flex-col shadow-2xl z-20 shrink-0">
@@ -123,6 +170,7 @@ export default function AdminDashboard() {
                 <nav className="flex-1 space-y-2 mb-8 md:mb-0">
                     <button onClick={() => { setView("list"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "Community Events" }); }} className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${view === "list" ? "bg-white text-primary shadow-lg" : "hover:bg-white/10 text-white/80 hover:text-white"}`}>Events List</button>
                     <button onClick={() => { setView("create"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "Community Events" }); }} className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${(view === "create" || view === "edit") ? "bg-white text-primary shadow-lg" : "hover:bg-white/10 text-white/80 hover:text-white"}`}>{view === "edit" ? "Edit Event" : "Create Event"}</button>
+                    <button onClick={() => { setView("password"); setEditingId(null); }} className={`w-full text-left px-4 py-3 rounded-lg font-medium transition-all ${view === "password" ? "bg-white text-primary shadow-lg" : "hover:bg-white/10 text-white/80 hover:text-white"}`}>Change Password</button>
                 </nav>
                 <div className="mt-auto border-t border-white/10 pt-6">
                     <button onClick={handleLogout} className="w-full text-left px-4 py-3 hover:bg-red-500/20 text-red-100 flex items-center justify-between rounded-lg transition-colors font-medium">Log out <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" x2="9" y1="12" y2="12" /></svg></button>
@@ -131,7 +179,7 @@ export default function AdminDashboard() {
 
             <div className="flex-1 p-6 md:p-12 overflow-y-auto w-full max-w-7xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold font-heading text-primary">{view === "list" ? "Manage Events" : view === "edit" ? "Edit Event" : "Create New Event"}</h1>
+                    <h1 className="text-3xl font-bold font-heading text-primary">{view === "list" ? "Manage Events" : view === "edit" ? "Edit Event" : view === "password" ? "Change Password" : "Create New Event"}</h1>
                     {view === "list" && (
                         <Button onClick={() => setView("create")} className="shadow-lg">
                             + New Event
@@ -307,6 +355,29 @@ export default function AdminDashboard() {
                             <div className="pt-4 border-t border-zinc-100 flex justify-end gap-3 mt-8">
                                 <Button type="button" variant="outline" onClick={() => { setView("list"); setEditingId(null); setForm({ title: "", date: "", location: "", shortDescription: "", fullDescription: "", image: "", videoUrl: "", category: "Community Events" }); }}>Cancel</Button>
                                 <Button type="submit" size="lg" className="px-8 shadow-md" variant="primary">{view === "edit" ? "Update Event" : "Publish Event"}</Button>
+                            </div>
+                        </form>
+                    </Card>
+                )}
+
+                {view === "password" && (
+                    <Card className="bg-white max-w-xl border border-zinc-200 shadow-sm p-8">
+                        <form onSubmit={handleChangePassword} className="space-y-6">
+                            <div>
+                                <label className="block text-sm font-semibold mb-2 text-foreground/80">Current Password</label>
+                                <input required type="password" autoComplete="current-password" className="w-full border border-zinc-200 p-3.5 rounded-xl bg-zinc-50 focus:ring-2 focus:ring-primary/20 outline-none transition-all" value={passwordForm.currentPassword} onChange={e => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })} />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold mb-2 text-foreground/80">New Password</label>
+                                <input required minLength={8} type="password" autoComplete="new-password" className="w-full border border-zinc-200 p-3.5 rounded-xl bg-zinc-50 focus:ring-2 focus:ring-primary/20 outline-none transition-all" value={passwordForm.newPassword} onChange={e => setPasswordForm({ ...passwordForm, newPassword: e.target.value })} placeholder="At least 8 characters" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold mb-2 text-foreground/80">Confirm New Password</label>
+                                <input required minLength={8} type="password" autoComplete="new-password" className="w-full border border-zinc-200 p-3.5 rounded-xl bg-zinc-50 focus:ring-2 focus:ring-primary/20 outline-none transition-all" value={passwordForm.confirmPassword} onChange={e => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })} />
+                            </div>
+                            <div className="pt-4 border-t border-zinc-100 flex justify-end gap-3 mt-8">
+                                <Button type="button" variant="outline" onClick={() => { setView("list"); setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" }); }}>Cancel</Button>
+                                <Button type="submit" size="lg" className="px-8 shadow-md" variant="primary">Update Password</Button>
                             </div>
                         </form>
                     </Card>

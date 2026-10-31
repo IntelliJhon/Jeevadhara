@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
 import Event from "@/lib/models/Event";
+import { requireAdmin } from "@/lib/auth";
 
 // GET /api/events/[id]
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -19,6 +20,9 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
 
 // DELETE /api/events/[id]
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
+    const auth = requireAdmin(req);
+    if (auth instanceof NextResponse) return auth;
+
     try {
         await connectToDatabase();
         const { id } = await params;
@@ -31,6 +35,9 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
 // PUT /api/events/[id]
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+    const auth = requireAdmin(req);
+    if (auth instanceof NextResponse) return auth;
+
     try {
         await connectToDatabase();
         const { id } = await params;

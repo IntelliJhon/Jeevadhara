@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
 import Event from "@/lib/models/Event";
+import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = 'force-dynamic';
 
@@ -47,8 +48,10 @@ export async function GET(req: Request) {
 
 // POST /api/events
 export async function POST(req: Request) {
+    const auth = requireAdmin(req);
+    if (auth instanceof NextResponse) return auth;
+
     try {
-        // In a real app we'd verify JWT token here
         await connectToDatabase();
 
         const body = await req.json();
